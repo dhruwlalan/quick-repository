@@ -4,10 +4,9 @@ import { program } from 'commander';
 import updateNotifier from 'update-notifier';
 
 import { name, version } from '../package.json';
-import setup from './commands/setup';
-import config from './commands/config';
-import token from './commands/token';
-import repo from './commands/repo';
+import { runSetup } from './commands/setup';
+import { verifyStoredToken } from './commands/verify';
+import { createRepo } from './commands/init';
 
 ///version///
 updateNotifier({
@@ -19,78 +18,25 @@ updateNotifier({
 }).notify({
    isGlobal: true,
 });
+program.name('qr').usage('[option] [command]');
 program.version(`${version}`, '-v, --version', 'output the current version');
 
-///setup///
+///commands///
 program
    .command('setup')
-   .description('initial basic app setup')
-   .action(async () => {
-      await setup.runSetup();
-   });
-program
-   .command('reset')
-   .description('reset app')
-   .action(async () => {
-      await config.resetConfig();
-   });
+   .description('setup personal access token for the app')
+   .action(() => runSetup());
 
-///config///
 program
-   .command('view-config')
-   .description('view all configs')
-   .action(() => {
-      setup.checkSetup();
-      config.viewConfig();
-   });
-program
-   .command('edit-config')
-   .description('edit app config')
-   .action(async () => {
-      setup.checkSetup();
-      await config.editConfig();
-   });
+   .command('verify')
+   .description('verify the stored personal access token')
+   .action(() => verifyStoredToken());
 
-///token///
-program
-   .command('add-token')
-   .description('add a new github personal access token')
-   .action(async () => {
-      setup.checkSetup();
-      await token.addNewToken();
-   });
-program
-   .command('verify-token')
-   .description('verify github personal access token')
-   .action(async () => {
-      setup.checkSetup();
-      await token.getUserFromToken();
-   });
-program
-   .command('view-token')
-   .description('view your stored github personal access token')
-   .action(async () => {
-      setup.checkSetup();
-      token.viewToken();
-   });
-program
-   .command('delete-token')
-   .description('delete your stored github personal access token')
-   .action(async () => {
-      setup.checkSetup();
-      await token.deleteToken();
-   });
-
-///repo///
 program
    .command('init')
    .description('create & host repository')
-   .action(async () => {
-      setup.checkSetup();
-      await repo.createRepository();
-   });
+   .action(() => createRepo());
 
 ///help///
-program.name('qr').usage('[option] [command]');
 program.parse(process.argv);
 if (!program.args.length) program.help();
