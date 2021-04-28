@@ -13,7 +13,7 @@ export function isGitRepo(): boolean {
    return false;
 }
 
-export async function createOctokitInstance(): Promise<Octokit> {
+async function createOctokitInstance(): Promise<Octokit> {
    try {
       const user = await displayVerifyToken(true);
       if (!user) throw new Error('invalid token');
@@ -25,7 +25,7 @@ export async function createOctokitInstance(): Promise<Octokit> {
    }
 }
 
-export async function createRemoteRepository(): Promise<string> {
+async function createRemoteRepository(): Promise<string> {
    const spinner = ora(cyanB('creating remote repository...'));
    try {
       const octokit = await createOctokitInstance();
@@ -42,17 +42,19 @@ export async function createRemoteRepository(): Promise<string> {
       return data.ssh_url;
    } catch (error) {
       spinner.stop();
+
       if (error.status === 422) {
          log.error(`unable to create repository: name already exists!`);
-      } else {
-         log.error(`error code: ${error.status}`);
-         log.error(error.message);
+         process.exit(1);
       }
+
+      log.error(`error code: ${error.status}`);
+      log.error(error.message);
       process.exit(1);
    }
 }
 
-export async function createLocalRepository(url: string): Promise<boolean> {
+async function createLocalRepository(url: string): Promise<boolean> {
    const spinner = ora(cyanB('creating local repository...'));
    try {
       spinner.start();
@@ -60,6 +62,7 @@ export async function createLocalRepository(url: string): Promise<boolean> {
       await execa('git', ['remote', 'add', 'origin', `${url}`]);
       await hold(1000);
       spinner.stop();
+
       return true;
    } catch (error) {
       spinner.stop();
@@ -69,7 +72,7 @@ export async function createLocalRepository(url: string): Promise<boolean> {
    }
 }
 
-export async function pushLocalRepositoryToRemote(
+async function pushLocalRepositoryToRemote(
    commitMsg: string,
 ): Promise<boolean> {
    const spinner = ora(cyanB('pushing local repository to remote...'));
@@ -90,7 +93,7 @@ export async function pushLocalRepositoryToRemote(
    }
 }
 
-export async function createRepository() {
+export async function createRepository(): Promise<never> {
    const sshUrl = await createRemoteRepository();
 
    if (!info.containsContent) {

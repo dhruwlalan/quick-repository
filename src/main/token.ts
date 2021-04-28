@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import ora from 'ora';
 
-import { cyanB } from '../utils/clogs';
+import { cyanB, log } from '../utils/clogs';
 import inquirer from './inquirer';
 import config from './config';
 
@@ -48,34 +48,31 @@ export async function displayVerifyToken(
    }
    spinner.stop();
 
-   if (user) return user;
-   return false;
+   if (!user) return false;
+
+   return user;
 }
 
-export async function addToken(newToken = false): Promise<boolean> {
-   if (!newToken) {
-      const { token } = await inquirer.askAddToken();
-      const user = await displayVerifyToken(token);
-      if (!user) return false;
+export async function addToken(newToken = false): Promise<never> {
+   const { token } = await inquirer.askAddToken(newToken);
+   const user = await displayVerifyToken(token);
+   if (user) {
       config.setToken(token);
-      return true;
+      log.success('token is valid!');
+      log.success('token added successfully!');
+      process.exit(0);
    }
+   log.error('token is invalid!');
+   process.exit(0);
+}
 
+export async function addNewToken(): Promise<never> {
    const user = await displayVerifyToken(true);
-   if (!user) {
-      const { token } = await inquirer.askAddToken();
-      const user = await displayVerifyToken(token);
-      if (!user) return false;
-      config.setToken(token);
-      return true;
-   }
+   if (!user) await addToken();
 
    const { addNewToken } = await inquirer.askConfirmAddNewToken();
    if (!addNewToken) process.exit(0);
 
-   const { token } = await inquirer.askAddToken(true);
-   const newUser = await displayVerifyToken(token);
-   if (!newUser) return false;
-   config.setToken(token);
-   return true;
+   await addToken(true);
+   process.exit(0);
 }
