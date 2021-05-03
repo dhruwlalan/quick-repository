@@ -1,6 +1,6 @@
 {
    "name": "quick-repository",
-   "version": "2.0.3",
+   "version": "2.0.4",
    "description": "A single command to quickly create a repository locally & also host it on github.",
    "main": "lib/index.js",
    "bin": {
