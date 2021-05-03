@@ -1,6 +1,6 @@
 {
    "name": "quick-repository",
-   "version": "2.0.3",
+   "version": "2.0.4",
    "description": "A single command to quickly create a repository locally & also host it on github.",
    "main": "lib/index.js",
    "bin": {
@@ -60,6 +60,7 @@
       "eslint-config-prettier": "^8.3.0",
       "eslint-plugin-prettier": "^3.4.0",
       "prettier": "^2.2.1",
+      "rimraf": "^3.0.2",
       "typescript": "^4.2.4"
    }
 }
