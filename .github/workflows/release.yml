@@ -16,8 +16,8 @@ jobs:
            with:
               node-version: '14'
               registry-url: https://registry.npmjs.org/
-         - run: npm i -g pnpm
-         - run: pnpm install --frozen-lockfile
+         - run: npm i -g pnpm only-package-manager
+         - run: opm ci
          - run: npm publish
            env:
               NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

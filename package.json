@@ -13,10 +13,6 @@
       "bin",
       "lib"
    ],
-   "scripts": {
-      "start": "babel --watch src --out-dir lib --extensions \".ts\"",
-      "build": "babel src --out-dir lib --extensions \".ts\""
-   },
    "repository": {
       "type": "git",
       "url": "https://github.com/dhruwlalan/quick-repository.git"
@@ -36,6 +32,11 @@
       "url": "https://github.com/dhruwlalan/quick-repository/issues"
    },
    "homepage": "https://github.com/dhruwlalan/quick-repository#readme",
+   "scripts": {
+      "prepublishOnly": "rimraf dist && npm run build",
+      "start": "babel --watch src --out-dir lib --extensions \".ts\"",
+      "build": "babel src --out-dir lib --extensions \".ts\""
+   },
    "dependencies": {
       "@octokit/rest": "^18.5.3",
       "colorette": "^1.2.2",
