@@ -4,7 +4,13 @@
 
 [![NPM](https://img.shields.io/npm/l/quick-repository)](https://github.com/dhruwlalan/quick-repository/blob/master/LICENSE) [![npm](https://img.shields.io/npm/v/quick-repository)](https://www.npmjs.com/package/quick-repository) [![npm](https://img.shields.io/npm/dt/quick-repository)](https://www.npmjs.com/package/quick-repository)
 
-~~git init~~ ❎ &nbsp; qr init ✅
+## Why?
+
+Creating repository and hosting it on Github feels quite repetitive & contains quite a few steps _(initializing local repo → create new repo on Github → add remote → push to Github)_ if you are someone who creates a lot of repositories _(in this way)_.<br>
+
+With `quick-repository` all you have to do is just run the command `$ qr init`, enter remote repository details and **DONE**.<br>
+
+`quick-repository` will create the local repository _(if it is already not a git repository or else it will just host it)_ , create the remote repository, add the remote, push to Github. _(It will also set the local branch to track the remote branch i.e up-stream branch)_ .
 
 ## Installation
 
@@ -26,7 +32,7 @@ You will get the input prompt for pasting in the personal access token.
 $  qr setup
 ```
 
-> you only need to run the setup once **or** if the stored token becomes invalid **or** if you purposely want to override the stored token with a new token.
+> you only need to run the setup once **_or_** if the stored token becomes invalid **_or_** if you purposely want to override the stored token with a new token.
 
 **Second**, run the below command inside any directory you wish to make it a git repository & also host it onto github.
 
