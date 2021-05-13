@@ -1,5 +1,5 @@
 import { noTokenStored } from '../main/token';
-import { createRepository, isGitRepo } from '../main/repo';
+import { createRepository, isGitRepo, hostRepository } from '../main/repo';
 import catchAsync from '../utils/catchAsync';
 import { log } from '../utils/clogs';
 
@@ -11,7 +11,8 @@ export const createRepo = catchAsync(async () => {
    }
 
    if (isGitRepo()) {
-      log.warn('current directory is already a git repository');
+      log.warn('current directory is already a git repository.');
+      await hostRepository();
       process.exit(0);
    }
 

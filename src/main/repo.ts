@@ -116,3 +116,105 @@ export async function createRepository(): Promise<never> {
    log.success('created repository successfully!');
    process.exit(0);
 }
+
+export async function hostRepository(): Promise<never> {
+   const { hostRepository } = await inquirer.askToHostRepository();
+   if (!hostRepository) process.exit(0);
+
+   const sshUrl = await createRemoteRepository();
+
+   if (!info.containsContent) {
+      const spinner = ora(cyanB('adding remote...'));
+      try {
+         spinner.start();
+         await execa('git', ['remote', 'add', 'origin', `${sshUrl}`]);
+         await hold(1000);
+         spinner.stop();
+         log.success('created repository successfully!');
+         process.exit(0);
+      } catch (error) {
+         spinner.stop();
+         log.error(`error code: ${error.status}`);
+         log.error(error.message);
+         process.exit(1);
+      }
+   }
+
+   let output;
+   try {
+      const res = await execa.command('git status -s');
+      output = res.stdout;
+   } catch (error) {
+      output = error.exitCode;
+      process.exit(1);
+   }
+
+   const spinner = ora(cyanB('checking working tree...'));
+   spinner.start();
+   await hold(1000);
+   spinner.stop();
+   if (output === '') {
+      log.success('working tree clean!');
+   } else {
+      log.warn('found modified or un-staged files!');
+   }
+
+   if (output === '') {
+      const spinner = ora(cyanB('pushing local repository to remote...'));
+      try {
+         spinner.start();
+         await execa('git', ['remote', 'add', 'origin', `${sshUrl}`]);
+         await execa('git', ['branch', '-M', 'master']);
+         await execa('git', ['push', '-u', 'origin', 'master']);
+         spinner.stop();
+         log.success('created repository successfully!');
+         process.exit(0);
+      } catch (error) {
+         spinner.stop();
+         log.error(`error code: ${error.status}`);
+         log.error(error.message);
+         process.exit(1);
+      }
+   }
+
+   const { normalCommit } = await inquirer.askToCreateNormalCommit();
+   if (!normalCommit) {
+      const spinner = ora(cyanB('adding remote...'));
+      try {
+         spinner.start();
+         await execa('git', ['remote', 'add', 'origin', `${sshUrl}`]);
+         await hold(1000);
+         spinner.stop();
+         log.success('created repository successfully!');
+         process.exit(0);
+      } catch (error) {
+         spinner.stop();
+         log.error(`error code: ${error.status}`);
+         log.error(error.message);
+         process.exit(1);
+      }
+   }
+
+   const { normalCommitMessage } = await inquirer.askNormalCommitMessage();
+   if (normalCommitMessage) {
+      const spinner = ora(cyanB('pushing local repository to remote...'));
+      try {
+         spinner.start();
+         await execa('git', ['remote', 'add', 'origin', `${sshUrl}`]);
+         await execa('git', ['add', '.']);
+         await execa('git', ['commit', '-m', `${normalCommitMessage}`]);
+         await execa('git', ['branch', '-M', 'master']);
+         await execa('git', ['push', '-u', 'origin', 'master']);
+         spinner.stop();
+         log.success('created repository successfully!');
+         process.exit(0);
+      } catch (error) {
+         spinner.stop();
+         log.error(`error code: ${error.status}`);
+         log.error(error.message);
+         process.exit(1);
+      }
+   }
+
+   process.exit(0);
+}

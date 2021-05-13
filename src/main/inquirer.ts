@@ -88,6 +88,22 @@ export default {
          },
       ]);
    },
+   askToHostRepository(): Promise<{ hostRepository: boolean }> {
+      return inquirer.prompt([
+         {
+            name: 'hostRepository',
+            type: 'confirm',
+            message: 'do you want to host your repository on github',
+            default: true,
+            validate(value) {
+               if (value.length) {
+                  return true;
+               }
+               return 'please enter your choice.';
+            },
+         },
+      ]);
+   },
    askInitialCommitMessage(): Promise<{ initialCommitMessage: string }> {
       return inquirer.prompt([
          {
@@ -100,6 +116,38 @@ export default {
                   return true;
                }
                return 'please enter your initial commit message.';
+            },
+         },
+      ]);
+   },
+   askToCreateNormalCommit(): Promise<{ normalCommit: boolean }> {
+      return inquirer.prompt([
+         {
+            name: 'normalCommit',
+            type: 'confirm',
+            message: 'do you want to commit the current state',
+            default: true,
+            validate(value) {
+               if (value.length) {
+                  return true;
+               }
+               return 'please enter your choice.';
+            },
+         },
+      ]);
+   },
+   askNormalCommitMessage(): Promise<{ normalCommitMessage: string }> {
+      return inquirer.prompt([
+         {
+            name: 'normalCommitMessage',
+            type: 'input',
+            message: 'enter your commit message:',
+            default: 'Initial Commit',
+            validate(value) {
+               if (value.length) {
+                  return true;
+               }
+               return 'please enter your commit message.';
             },
          },
       ]);
